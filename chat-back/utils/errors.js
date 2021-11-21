@@ -13,7 +13,8 @@ const serverError = (err, port) => {
   }
 };
 const notFoundError = (req, res, next) => {
-  const error = generaError("not found", 404);
+  const error = generateError("not found", 404);
+  next(error);
 };
 
 const generalError = (err, req, res, next) => {
@@ -26,7 +27,7 @@ const generalError = (err, req, res, next) => {
 };
 
 module.exports = {
-  generalError,
+  generateError,
   serverError,
   notFoundError,
   generalError
