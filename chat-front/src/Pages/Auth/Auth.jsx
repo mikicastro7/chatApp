@@ -4,8 +4,18 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import React, { useEffect, useState, useContext } from "react";
 import styles from "./Auth.module.css";
+import UserContext from "../../Contexts/UserContext";
+import useForm from "../../hooks/useForm";
 
 const Auth = function () {
+  const { loginUser, loginError, registerUser } = useContext(UserContext);
+  console.log(loginError);
+  const { formData, modifieData } = useForm({
+    userName: "",
+    password: "",
+    repeatPassword: ""
+  });
+
   const [authType, setAuthType] = useState(0);
 
   const setRegister = () => {
@@ -14,6 +24,14 @@ const Auth = function () {
 
   const setLogin = () => {
     setAuthType(0);
+  };
+
+  const submitForm = (e) => {
+    if (authType === 0) {
+      loginUser(e, formData);
+    } else {
+      registerUser(e, formData);
+    }
   };
 
   return (
@@ -29,11 +47,13 @@ const Auth = function () {
         </div>
         <div className={styles.bodyForm}>
           <h3 className={styles.formTitle}>Welcome {authType === 0 ? "Login" : "Register"}</h3>
-          <form>
+          <form onSubmit={(e) => submitForm(e)}>
             <label htmlFor="user" className={styles.formLabel}>User</label>
             <input
-              name="user"
+              name="userName"
               id="user"
+              value={formData.userName}
+              onChange={modifieData}
               placeholder="Username"
               className={styles.formInput}
               type="text"
@@ -43,6 +63,8 @@ const Auth = function () {
             <input
               name="password"
               id="password"
+              value={formData.password}
+              onChange={modifieData}
               placeholder="Password"
               className={styles.formInput}
               type="password"
@@ -53,15 +75,18 @@ const Auth = function () {
                 <>
                   <label htmlFor="repeatPassword" style={{ marginTop: "20px" }} className={styles.formLabel}>Repeat password</label>
                   <input
-                    name="password"
-                    id="password"
-                    placeholder="Password"
+                    name="repeatPassword"
+                    id="repeatPassword"
+                    value={formData.repeatPassword}
+                    onChange={modifieData}
+                    placeholder="repeat password"
                     className={styles.formInput}
                     type="password"
                     autoComplete="off"
                   />
                 </>
               )}
+            {loginError.error && <p className={styles.error}>{loginError.message}</p>}
             <button type="submit" className={styles.formButton}>{authType === 0 ? "Login" : "Register"}</button>
           </form>
         </div>
