@@ -11,7 +11,7 @@ const UserContextProvider = function (props) {
   const navigate = useNavigate();
   const { data, requestData } = useFetch();
   const { children } = props;
-  const [userInfo, setInfoUsuario] = useState("cargando");
+  const [userInfo, setUserInfo] = useState("cargando");
   const [loginError, setErrorLogin] = useState(false);
   const [token, setToken] = useState(localStorage.getItem("token-acceso-api"));
 
@@ -44,14 +44,15 @@ const UserContextProvider = function (props) {
         console.log("entra");
       } else if (data.token) {
         setToken(data.token);
-        setInfoUsuario(token ? jwt_decode(token) : false);
+        setUserInfo(token ? jwt_decode(token) : false);
         localStorage.setItem("token-acceso-api", data.token);
         navigate("/chat");
       }
     }
   }, [data, history, token]);
   useEffect(() => {
-    setInfoUsuario(token ? jwt_decode(token) : false);
+    setUserInfo(token ? jwt_decode(token) : false);
+    console.log(userInfo);
   }, [token]);
   return (
     <UserContext.Provider value={{
