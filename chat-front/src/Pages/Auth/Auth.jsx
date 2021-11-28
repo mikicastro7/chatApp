@@ -9,7 +9,6 @@ import useForm from "../../hooks/useForm";
 
 const Auth = function () {
   const { loginUser, loginError, registerUser } = useContext(UserContext);
-  console.log(loginError);
   const { formData, modifieData } = useForm({
     userName: "",
     password: "",

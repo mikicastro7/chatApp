@@ -23,7 +23,6 @@ const generalError = (err, req, res, next) => {
     message: err.code ? err.message : "general error"
   };
   res.status(error.code).json({ error: true, message: error.message });
-  console.log(err);
 };
 
 module.exports = {

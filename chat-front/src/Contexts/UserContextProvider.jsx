@@ -13,7 +13,7 @@ const UserContextProvider = function (props) {
   const { children } = props;
   const [userInfo, setUserInfo] = useState("cargando");
   const [loginError, setErrorLogin] = useState(false);
-  const [token, setToken] = useState(localStorage.getItem("token-acceso-api"));
+  const [token, setToken] = useState(localStorage.getItem("api-token"));
 
   const loginUser = (e, formData) => {
     e.preventDefault();
@@ -41,18 +41,16 @@ const UserContextProvider = function (props) {
     if (data) {
       if (data.error) {
         setErrorLogin(data);
-        console.log("entra");
       } else if (data.token) {
         setToken(data.token);
         setUserInfo(token ? jwt_decode(token) : false);
-        localStorage.setItem("token-acceso-api", data.token);
+        localStorage.setItem("api-token", data.token);
         navigate("/chat");
       }
     }
   }, [data, history, token]);
   useEffect(() => {
     setUserInfo(token ? jwt_decode(token) : false);
-    console.log(userInfo);
   }, [token]);
   return (
     <UserContext.Provider value={{

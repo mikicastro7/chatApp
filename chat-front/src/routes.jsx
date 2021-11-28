@@ -3,16 +3,12 @@ import { Navigate, Outlet } from "react-router-dom";
 import Auth from "./Pages/Auth/Auth";
 import NotFoundPage from "./Pages/NotFoundPage";
 import UserContextProvider from "./Contexts/UserContextProvider";
+import Chat from "./Pages/Chat/Chat";
 
 const routes = (isLoggedIn) => [
   {
     path: "/chat",
-    element: isLoggedIn ? <h1>Logged</h1> : <Navigate to="/" />,
-    children: [
-      /*  { path: "/dashboard", element: <Dashboard /> },
-        { path: "/account", element: <Account /> },
-      { path: "/", element: <Navigate to="/chat" /> }, */
-    ],
+    element: isLoggedIn ? <UserContextProvider><Chat /></UserContextProvider> : <Navigate to="/" />,
   },
   {
     path: "/",
@@ -21,10 +17,6 @@ const routes = (isLoggedIn) => [
         <Auth />
       </UserContextProvider>
     ) : <Navigate to="/chat" />,
-    children: [
-      { path: "login", element: <UserContextProvider><Auth /></UserContextProvider> },
-      { path: "/", element: <Navigate to="/login" /> },
-    ],
   },
   {
     path: "/*",

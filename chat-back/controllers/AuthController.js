@@ -5,7 +5,6 @@ const User = require("../db/models/user");
 
 
 const registerUser = async newUser => {
-  console.log(newUser);
   const response = {
     user: null,
     error: null
