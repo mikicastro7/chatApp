@@ -2,20 +2,20 @@ import React from "react";
 import { Navigate, Outlet } from "react-router-dom";
 import Auth from "./Pages/Auth/Auth";
 import NotFoundPage from "./Pages/NotFoundPage";
-import UserContextProvider from "./Contexts/UserContextProvider";
+import AuthContextProvider from "./Contexts/AuthContextProvider";
 import Chat from "./Pages/Chat/Chat";
 
 const routes = (isLoggedIn) => [
   {
     path: "/chat",
-    element: isLoggedIn ? <UserContextProvider><Chat /></UserContextProvider> : <Navigate to="/" />,
+    element: isLoggedIn ? <AuthContextProvider><Chat /></AuthContextProvider> : <Navigate to="/" />,
   },
   {
     path: "/",
     element: !isLoggedIn ? (
-      <UserContextProvider>
+      <AuthContextProvider>
         <Auth />
-      </UserContextProvider>
+      </AuthContextProvider>
     ) : <Navigate to="/chat" />,
   },
   {

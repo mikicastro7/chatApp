@@ -4,11 +4,11 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import React, { useEffect, useState, useContext } from "react";
 import styles from "./Auth.module.css";
-import UserContext from "../../Contexts/UserContext";
+import AuthContext from "../../Contexts/AuthContext";
 import useForm from "../../hooks/useForm";
 
 const Auth = function () {
-  const { loginUser, loginError, registerUser } = useContext(UserContext);
+  const { loginUser, loginError, registerUser } = useContext(AuthContext);
   const { formData, modifieData } = useForm({
     userName: "",
     password: "",

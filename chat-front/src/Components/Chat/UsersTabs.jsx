@@ -1,5 +1,6 @@
 import React from "react";
 import { Tabs, Tab } from "react-bootstrap";
+import UserInfo from "./UserInfo";
 
 const UsersTabs = function () {
   return (

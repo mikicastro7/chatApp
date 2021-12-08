@@ -3,10 +3,10 @@ import Logout from "../../Components/Auth/Logout";
 
 import UsersTabs from "../../Components/Chat/UsersTabs";
 import ChatDisplayer from "../../Components/Chat/ChatDisplayer";
-import UserContext from "../../Contexts/UserContext";
+import AuthContext from "../../Contexts/AuthContext";
 
 const Chat = function () {
-  const { userInfo } = useContext(UserContext);
+  const { userInfo } = useContext(AuthContext);
 
   return (
     <>

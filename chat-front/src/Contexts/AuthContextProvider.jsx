@@ -4,10 +4,10 @@ import React, { useEffect, useState } from "react";
 // eslint-disable-next-line camelcase
 import jwt_decode from "jwt-decode";
 import { useNavigate } from "react-router-dom";
-import UserContext from "./UserContext";
+import AuthContext from "./AuthContext";
 import useFetch from "../hooks/useFetch";
 
-const UserContextProvider = function (props) {
+const AuthContextProvider = function (props) {
   const navigate = useNavigate();
   const { data, requestData } = useFetch();
   const { children } = props;
@@ -53,13 +53,13 @@ const UserContextProvider = function (props) {
     setUserInfo(token ? jwt_decode(token) : false);
   }, [token]);
   return (
-    <UserContext.Provider value={{
+    <AuthContext.Provider value={{
       userInfo, loginUser, registerUser, loginError
     }}
     >
       {children}
-    </UserContext.Provider>
+    </AuthContext.Provider>
   );
 };
 
-export default UserContextProvider;
+export default AuthContextProvider;
