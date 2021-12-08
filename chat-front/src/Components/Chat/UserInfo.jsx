@@ -1,10 +1,20 @@
 import React from "react";
 
-const UserInfo = function () {
+const UserInfo = function ({ userName, userId, type }) {
+  const getButtonsByType = () => {
+    if (type === 1) {
+      return (
+        <div>
+          <button type="button">Add</button>
+          <button type="button">Chat</button>
+        </div>
+      );
+    }
+  };
   return (
-    <div>
-      <p>Miki</p>
-      <button type="button">Message</button>
+    <div className="user-displayer">
+      <p>{userName}</p>
+      {getButtonsByType()}
     </div>
   );
 };

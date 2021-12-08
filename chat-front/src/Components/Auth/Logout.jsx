@@ -9,7 +9,6 @@ const Logout = function ({ userName }) {
     navigate("/");
   };
 
-  console.log(userName);
   return (
     <div className="logout-info">
       <p>{userName}</p>
