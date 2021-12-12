@@ -69,8 +69,28 @@ const postAcceptFriend = async (userId, friendToAcceptId) => {
   return response;
 }
 
+const postDeclineFriend = async (userId, friendToDeclineId) => {
+  const userFrom = await User.findOne(ObjectId(userId));
+  const friendToDecline = await User.findOne(ObjectId(friendToDeclineId));
+  const response = {
+    status : "success",
+    error: null
+  };
+  if (userFrom.received.some(request => request.equals(friendToDecline._id))) {
+    userFrom.received.pull({_id: friendToDecline._id})
+    friendToDecline.sent.pull({_id: userFrom._id})
+  } else {
+    response.error = true
+    return response;
+  }
+  userFrom.save();
+  friendToDecline.save();
+  return response;
+}
+
 module.exports = {
   getUsersByType,
   postFriendRequest,
-  postAcceptFriend
+  postAcceptFriend,
+  postDeclineFriend
 };
