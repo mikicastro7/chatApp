@@ -6,47 +6,34 @@ import UserInfo from "./UserInfo";
 import UsersContext from "../../Contexts/UsersContext";
 
 const UsersTabs = function () {
-  let users = null;
-  let friends = null;
-  let sent = null;
-  let received = null;
-
   const {
-    usersByType
+    users, friends, sent, received
   } = useContext(UsersContext);
-
-  if (usersByType) {
-    users = usersByType.usersByType.users;
-    friends = usersByType.usersByType.friends;
-    sent = usersByType.usersByType.sent;
-    received = usersByType.usersByType.received;
-  }
-
   return (
     <Tabs defaultActiveKey="users" id="uncontrolled-tab-example" className="mb-3">
       <Tab eventKey="users" title="Users">
-        {users !== null ? users.length !== 0 ? users.map(user => <UserInfo key={user._id} userName={user.userName} type={1} />) : <p>no data</p> : (
+        {users !== null ? users.length !== 0 ? users.map(user => <UserInfo key={user._id} userName={user.userName} userId={user._id} type={1} />) : <p>no data</p> : (
           <Spinner animation="border" role="status">
             <span className="visually-hidden">Loading...</span>
           </Spinner>
         )}
       </Tab>
       <Tab eventKey="friends" title="Friends">
-        {users !== null ? friends.length !== 0 ? friends.map(user => <UserInfo key={user._id} userName={user.userName} type={2} />) : <p>no data</p> : (
+        {users !== null ? friends.length !== 0 ? friends.map(user => <UserInfo key={user._id} userName={user.userName} userId={user._id} type={2} />) : <p>no data</p> : (
           <Spinner animation="border" role="status">
             <span className="visually-hidden">Loading...</span>
           </Spinner>
         )}
       </Tab>
       <Tab eventKey="requests" title="Friend requests">
-        {users !== null ? received.length !== 0 ? received.map(user => <UserInfo key={user._id} userName={user.userName} type={3} />) : <p>no data</p> : (
+        {users !== null ? received.length !== 0 ? received.map(user => <UserInfo key={user._id} userName={user.userName} userId={user._id} type={3} />) : <p>no data</p> : (
           <Spinner animation="border" role="status">
             <span className="visually-hidden">Loading...</span>
           </Spinner>
         )}
       </Tab>
       <Tab eventKey="sent" title="Sent requests">
-        {users !== null ? sent.length !== 0 ? sent.map(user => <UserInfo key={user._id} userName={user.userName} type={3} />) : <p>no data</p> : (
+        {users !== null ? sent.length !== 0 ? sent.map(user => <UserInfo key={user._id} userName={user.userName} userId={user._id} type={4} />) : <p>no data</p> : (
           <Spinner animation="border" role="status">
             <span className="visually-hidden">Loading...</span>
           </Spinner>

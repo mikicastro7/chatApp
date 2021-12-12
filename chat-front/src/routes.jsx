@@ -9,7 +9,7 @@ import Chat from "./Pages/Chat/Chat";
 const routes = (isLoggedIn) => [
   {
     path: "/chat",
-    element: isLoggedIn ? <UsersContextProvider><AuthContextProvider><Chat /></AuthContextProvider></UsersContextProvider> : <Navigate to="/" />,
+    element: isLoggedIn ? <AuthContextProvider><UsersContextProvider><Chat /></UsersContextProvider></AuthContextProvider> : <Navigate to="/" />,
   },
   {
     path: "/",

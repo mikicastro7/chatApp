@@ -2,17 +2,24 @@
 /* eslint-disable react/prop-types */
 import React, { useEffect, useState } from "react";
 // eslint-disable-next-line camelcase
-import jwt_decode from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import UsersContext from "./UsersContext";
 import useFetch from "../hooks/useFetch";
+import useHttp from "../hooks/useHttp";
 
 const UsersContextProvider = function (props) {
   const navigate = useNavigate();
-  const { data: usersByType, requestData: requestUsers } = useFetch();
+  const { data: usersByType, requestData: requestUsers, setData: setUsersByType } = useFetch();
+  const [users, setUsers] = useState(null);
+  const [friends, setFriends] = useState(null);
+  const [sent, setSent] = useState(null);
+  const [received, setReceived] = useState(null);
   const { children } = props;
   const [token, setToken] = useState(localStorage.getItem("api-token"));
   const myHeaders = new Headers();
+
+  const { sendRequest: friendRequest } = useHttp();
+  const { sendRequest: acceptRequest } = useHttp();
 
   myHeaders.append("Content-Type", "application/json");
   myHeaders.append("Authorization", `Bearer ${token}`);
@@ -23,9 +30,69 @@ const UsersContextProvider = function (props) {
     });
   }, [requestUsers]);
 
+  useEffect(() => {
+    if (usersByType !== null) {
+      setUsers(usersByType.usersByType.users);
+      setFriends(usersByType.usersByType.friends);
+      setSent(usersByType.usersByType.sent);
+      setReceived(usersByType.usersByType.received);
+    }
+  }, [usersByType]);
+
+  const passUserToSent = (userId) => {
+    const user = users.find(user => user._id === userId);
+    setUsers(prevState => prevState.filter(user => user._id !== userId));
+    setSent(prevState => [...prevState, user]);
+  };
+
+  const sendRequestHandler = async (userIdSend) => {
+    friendRequest({
+      url: "http://localhost:5000/users/send-request",
+      method: "POST",
+      body: JSON.stringify({
+        friendToSendRquest: userIdSend
+      }),
+      headers: myHeaders
+    }, passUserToSent.bind(null, userIdSend));
+  };
+
+  const passReceivedToFriend = (userId) => {
+    const user = received.find(user => user._id === userId);
+    setReceived(prevState => prevState.filter(user => user._id !== userId));
+    setFriends(prevState => [...prevState, user]);
+  };
+
+  const acceptRequestHandler = async (userIdAccept) => {
+    friendRequest({
+      url: "http://localhost:5000/users/accept-request",
+      method: "POST",
+      body: JSON.stringify({
+        friendToAccept: userIdAccept
+      }),
+      headers: myHeaders
+    }, passReceivedToFriend.bind(null, userIdAccept));
+  };
+
+  const passReceivedToUser = (userId) => {
+    const user = received.find(user => user._id === userId);
+    setReceived(prevState => prevState.filter(user => user._id !== userId));
+    setUsers(prevState => [...prevState, user].sort());
+  };
+
+  const declineRequestHandler = async (userIdDecline) => {
+    friendRequest({
+      url: "http://localhost:5000/users/decline-request",
+      method: "POST",
+      body: JSON.stringify({
+        friendToDecline: userIdDecline
+      }),
+      headers: myHeaders
+    }, passReceivedToUser.bind(null, userIdDecline));
+  };
+
   return (
     <UsersContext.Provider value={{
-      usersByType
+      users, friends, sent, received, sendRequestHandler, acceptRequestHandler, declineRequestHandler
     }}
     >
       {children}
