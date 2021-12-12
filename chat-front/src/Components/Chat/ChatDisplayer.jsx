@@ -1,10 +1,13 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
 /* eslint-disable react/prop-types */
-import React from "react";
+import React, { useRef, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 
 const ChatDisplayer = function ({ chatName }) {
+  const elementRef = useRef(null);
+  useEffect(() => elementRef.current.scrollIntoView({ behavior: "smooth" }));
+
   return (
     <div className="chat-displayer">
       <h2>{chatName}</h2>
@@ -24,7 +27,7 @@ const ChatDisplayer = function ({ chatName }) {
         <p className="my-message">Message mine</p>
         <p className="other-message">Message other</p>
         <p className="my-message">Message mine</p>
-        <p className="other-message">Message other</p>
+        <p ref={elementRef} className="other-message">Message other</p>
       </div>
       <form className="form-send-message">
         <input type="text" placeholder="Write message" />

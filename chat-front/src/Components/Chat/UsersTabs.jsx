@@ -40,7 +40,14 @@ const UsersTabs = function () {
         )}
       </Tab>
       <Tab eventKey="chats" title="Chats">
-        <h3>Chats</h3>
+        <Tabs defaultActiveKey="users" id="uncontrolled-tab-example" className="mb-3">
+          <Tab eventKey="friends" title="Friends">
+            <h1>Friends</h1>
+          </Tab>
+          <Tab eventKey="no friends" title="Random">
+            <h1>No frienfds</h1>
+          </Tab>
+        </Tabs>
       </Tab>
     </Tabs>
   );
