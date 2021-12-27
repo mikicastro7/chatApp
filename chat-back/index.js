@@ -6,8 +6,9 @@ const morgan = require("morgan");
 require("dotenv").config();
 const express = require("express");
 
-const routesAuth = require("./routes/auth")
+const routesAuth = require("./routes/auth");
 const routesUsers = require("./routes/users");
+const routesChat = require("./routes/chat");
 
 const {
   generateError, serverError, notFoundError, generalError
@@ -32,6 +33,7 @@ app.use(express.json());
 
 app.use("/auth", routesAuth);
 app.use("/users", routesUsers);
+app.use("/chat", routesChat);
 
 app.use(notFoundError);
 app.use(generalError);
