@@ -13,9 +13,11 @@ const ChatContextProvider = function (props) {
   const [friendsChats, setFriendsChats] = useState(null);
   const [randomChats, setRandomChats] = useState(null);
   const [activeChat, setActiveChat] = useState(null);
+  const [firstTimeChats, setFirstTimeChats] = useState(true);
   const { children } = props;
 
   const { sendRequest: getChat } = useHttp();
+  const { sendRequest: createGetChat } = useHttp();
 
   const myHeaders = new Headers();
 
@@ -33,7 +35,10 @@ const ChatContextProvider = function (props) {
       setFriendsChats(chatsByType.chats.friendsChats);
       setRandomChats(chatsByType.chats.randomChats);
       if (friendsChats) {
-        setActiveChat(friendsChats[0]);
+        if (firstTimeChats) {
+          setActiveChat(friendsChats[0]);
+          setFirstTimeChats(false);
+        }
       } else {
         setActiveChat(null);
       }
@@ -55,9 +60,34 @@ const ChatContextProvider = function (props) {
     }, setActualChat.bind(null, chatId));
   };
 
+  const getNewChat = (response) => {
+    if (response.status === "success") {
+      if (response.chat.new === false) {
+        setActiveChat(response.chat.chat);
+      } else {
+        requestChats("http://localhost:5000/chat", {
+          headers: myHeaders
+        });
+        setActiveChat(response.chat.chat);
+      }
+    }
+  };
+
+  const createGetChatHandler = async (userWithId) => {
+    console.log(userWithId);
+    createGetChat({
+      url: "http://localhost:5000/chat/new",
+      method: "POST",
+      body: JSON.stringify({
+        chatWith: userWithId
+      }),
+      headers: myHeaders
+    }, getNewChat.bind(null));
+  };
+
   return (
     <ChatContext.Provider value={{
-      friendsChats, randomChats, activeChat, getChatHandler
+      friendsChats, randomChats, activeChat, getChatHandler, createGetChatHandler
     }}
     >
       {children}
