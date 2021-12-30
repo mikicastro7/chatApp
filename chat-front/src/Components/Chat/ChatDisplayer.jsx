@@ -22,7 +22,7 @@ const ChatDisplayer = function ({ chatName }) {
   } = useContext(AuthContext);
   let chatWith = null;
   const userToChatWith = () => {
-    if (activeChat !== null) {
+    if (activeChat) {
       chatWith = activeChat.users.filter(user => user._id !== userInfo.id)[0];
       return `Chat with ${chatWith.userName}`;
     }
@@ -31,7 +31,10 @@ const ChatDisplayer = function ({ chatName }) {
   let messages = [];
 
   const formatMessages = () => {
-    if (activeChat !== null) {
+    console.log(activeChat);
+    if (activeChat === undefined) {
+      messages = <p className="no-chat">Chat with somone or select a random chat what are you waiting for</p>;
+    } else if (activeChat) {
       activeChat.messages.forEach((message, i) => {
         let className = null;
         if (userInfo.id === message.user) className = "my-message";

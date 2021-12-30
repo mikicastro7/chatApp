@@ -47,7 +47,7 @@ const ChatContextProvider = function (props) {
   };
 
   const getChatHandler = async (chatId) => {
-    if (chatId === activeChat._id) return;
+    if (activeChat && chatId === activeChat._id) return;
     getChat({
       url: `http://localhost:5000/chat/${chatId}`,
       method: "GET",

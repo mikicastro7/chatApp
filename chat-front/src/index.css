@@ -190,6 +190,11 @@ nav h1 {
   color: #007bff;
 }
 
+.no-chat {
+  text-align: center;
+  margin-top: 20px
+}
+
 .active-chat {
   background-color: rgba(79, 167, 255, 0.080);
 }
