@@ -4,7 +4,7 @@ const Chat = require("../db/models/chat");
 const User = require("../db/models/user");
 var ObjectId = require('mongodb').ObjectID;
 
-const getChat = async (userOneId, userTwoId) => {
+const getCreateChat = async (userOneId, userTwoId) => {
   const response = {
     chat : "success",
     error: null
@@ -57,12 +57,11 @@ const sendMessage = async (userId, text, chatId) => {
 
 const getChats = async (userId) => {
   const response = {
-    chats : "success",
+    chats : null,
     error: null
   };
   const user = await User.findOne(ObjectId(userId));
-  const chats = await Chat.find({users: user}).populate({ path: "users", select: "userName"});
-
+  const chats = await Chat.find({users: user}).sort('-messages.createdAt').populate({ path: "users", select: "userName"});
 
   // TODO improve eficiency
   const friendsChats = [];
@@ -70,7 +69,6 @@ const getChats = async (userId) => {
 
   chats.forEach(chat => {
     const userToFindId = chat.users.filter(ChatUser => !ChatUser._id.equals(user._id));
-    console.log(userToFindId);
     if (user.friends.find(friend => friend._id.equals(userToFindId[0]._id))) {
       friendsChats.push(chat)
     } else {
@@ -86,8 +84,30 @@ const getChats = async (userId) => {
   return response;
 }
 
+const getChat = async (userId, chatId) => {
+  const response = {
+    chat: null,
+    error: null
+  }
+  const user = await User.findOne(ObjectId(userId));
+  const chat = await Chat.findOne(ObjectId(chatId)).populate({ path: "users", select: "userName"});
+
+  if (chat) {
+    if (chat.users.find(user => user._id == user._id)) {
+      response.chat = chat;
+    } else {
+      response.error = generateError("not permited chat", 409);
+    }
+  } else {
+    response.error = generateError("Chat does not exists", 409);
+  }
+
+  return response;
+}
+
 module.exports = {
-  getChat,
+  getCreateChat,
   sendMessage,
-  getChats
+  getChats,
+  getChat
 };

@@ -1,16 +1,14 @@
 const express = require("express");
 const {
-  getChat, sendMessage, getChats
+  getCreateChat, sendMessage, getChats, getChat
 } = require("../controllers/ChatController");
 const authUser = require("../middlewares/authUser");
 
 const router = express.Router();
 
-router
-
-router.post("/chat/", authUser, async (req, res, next) => {
+router.post("/new/", authUser, async (req, res, next) => {
   const { chatWith } = req.body;
-  const { chat, error } = await getChat(req.userId, chatWith);
+  const { chat, error } = await getCreateChat(req.userId, chatWith);
    if (error) {
     next(error);
   } else {
@@ -42,6 +40,18 @@ router.get("/", authUser, async (req, res, next) => {
     res.status(201).json({
       status: "success",
       chats: chats
+    });
+  }
+})
+
+router.get("/:chatId", authUser, async (req, res, next) => {
+  const { chat, error } = await getChat(req.userId, req.params.chatId);
+  if (error) {
+    next(error);
+  } else {
+    res.status(201).json({
+      status: "success",
+      chat: chat
     });
   }
 })
