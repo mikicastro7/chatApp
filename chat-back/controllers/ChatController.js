@@ -20,7 +20,7 @@ const getCreateChat = async (userOneId, userTwoId) => {
     newChatBd = await Chat.create({
       users: [userOne, userTwo]
     });
-    response.chat = newChatBd._id;
+    response.chat = newChatBd;
   } else {
     response.chat = existChat
   }
