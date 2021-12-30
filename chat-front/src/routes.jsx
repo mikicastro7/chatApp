@@ -2,14 +2,25 @@ import React from "react";
 import { Navigate, Outlet } from "react-router-dom";
 import Auth from "./Pages/Auth/Auth";
 import NotFoundPage from "./Pages/NotFoundPage";
+import Chat from "./Pages/Chat/Chat";
+
 import AuthContextProvider from "./Contexts/AuthContextProvider";
 import UsersContextProvider from "./Contexts/UsersContextsProvider";
-import Chat from "./Pages/Chat/Chat";
+import ChatContextProvider from "./Contexts/ChatContextProvider";
 
 const routes = (isLoggedIn) => [
   {
     path: "/chat",
-    element: isLoggedIn ? <AuthContextProvider><UsersContextProvider><Chat /></UsersContextProvider></AuthContextProvider> : <Navigate to="/" />,
+    element: isLoggedIn
+      ? (
+        <AuthContextProvider>
+          <UsersContextProvider>
+            <ChatContextProvider>
+              <Chat />
+            </ChatContextProvider>
+          </UsersContextProvider>
+        </AuthContextProvider>
+      ) : <Navigate to="/" />,
   },
   {
     path: "/",

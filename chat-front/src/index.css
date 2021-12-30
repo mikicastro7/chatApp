@@ -162,6 +162,42 @@ nav h1 {
   align-items: center;
 }
 
+.chat-preview-displayer {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid rgb(204, 204, 204);
+  padding: 8px 25px;
+  cursor: pointer;
+}
+
+.chat-preview-displayer p {
+  margin-bottom: 0px;
+}
+
+.chat-preview-displayer:hover {
+  background-color: rgb(250, 250, 250);
+}
+
+.chat-preview-displayer:last-of-type {
+  border-bottom: none;
+}
+
+.last-message {
+  font-size: 0.9rem;
+}
+
+.blue-color {
+  color: #007bff;
+}
+
+.active-chat {
+  background-color: rgba(79, 167, 255, 0.080);
+}
+
+div.active-chat:hover {
+  background-color: rgba(79, 167, 255, 0.080);
+  cursor: initial;
+}
 
 .tab-content {
   overflow-y: scroll;

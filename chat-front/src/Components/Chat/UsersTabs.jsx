@@ -3,14 +3,21 @@ import React, { useContext } from "react";
 import { Tabs, Tab } from "react-bootstrap";
 import Spinner from "react-bootstrap/Spinner";
 import UserInfo from "./UserInfo";
+import ChatInfo from "./ChatInfo";
 import UsersContext from "../../Contexts/UsersContext";
+import ChatContext from "../../Contexts/ChatContext";
 
 const UsersTabs = function () {
   const {
     users, friends, sent, received
   } = useContext(UsersContext);
+
+  const {
+    friendsChats, randomChats
+  } = useContext(ChatContext);
+
   return (
-    <Tabs defaultActiveKey="users" id="uncontrolled-tab-example" className="mb-3">
+    <Tabs defaultActiveKey="chats" id="uncontrolled-tab-example" className="mb-3">
       <Tab eventKey="users" title="Users">
         {users !== null ? users.length !== 0 ? users.map(user => <UserInfo key={user._id} userName={user.userName} userId={user._id} type={1} />) : <p>no data</p> : (
           <Spinner animation="border" role="status">
@@ -40,12 +47,20 @@ const UsersTabs = function () {
         )}
       </Tab>
       <Tab eventKey="chats" title="Chats">
-        <Tabs defaultActiveKey="users" id="uncontrolled-tab-example" className="mb-3">
-          <Tab eventKey="friends" title="Friends">
-            <h1>Friends</h1>
+        <Tabs defaultActiveKey="friendsChats" id="uncontrolled-tab-example" className="mb-3">
+          <Tab eventKey="friendsChats" title="Friends">
+            {friendsChats != null ? friendsChats.length !== 0 ? friendsChats.map(chat => <ChatInfo key={chat._id} lastMessage={chat.messages[chat.messages.length - 1]} users={chat.users} chatId={chat._id} />) : <p>no data</p> : (
+              <Spinner animation="border" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </Spinner>
+            )}
           </Tab>
-          <Tab eventKey="no friends" title="Random">
-            <h1>No frienfds</h1>
+          <Tab eventKey="randomChats" title="Random">
+            {randomChats != null ? randomChats.length !== 0 ? randomChats.map(chat => <ChatInfo key={chat._id} lastMessages={chat.messages[chat.messages.length - 1]} users={chat.users} chatId={chat._id} />) : <p>no data</p> : (
+              <Spinner animation="border" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </Spinner>
+            )}
           </Tab>
         </Tabs>
       </Tab>
