@@ -35,7 +35,7 @@ const getCreateChat = async (userOneId, userTwoId) => {
 
 const sendMessage = async (userId, text, chatId) => {
   const response = {
-    chat : "success",
+    message : null,
     error: null
   };
   const chat = await Chat.findOne(ObjectId(chatId));
@@ -55,8 +55,9 @@ const sendMessage = async (userId, text, chatId) => {
       text: text,
       user: user
     })
-    response.chat = chat._id
     chat.save();
+    response.message = chat.messages[chat.messages.length - 1];
+    response.message.user = response.message.user._id
   }
   return response;
 }

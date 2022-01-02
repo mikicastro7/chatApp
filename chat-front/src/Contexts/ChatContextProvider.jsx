@@ -16,8 +16,9 @@ const ChatContextProvider = function (props) {
   const [firstTimeChats, setFirstTimeChats] = useState(true);
   const { children } = props;
 
-  const { sendRequest: getChat } = useHttp();
-  const { sendRequest: createGetChat } = useHttp();
+  const { sendRequest: getChatRequest } = useHttp();
+  const { sendRequest: createGetChatRequest } = useHttp();
+  const { sendRequest: sendMessageRequest } = useHttp();
 
   const myHeaders = new Headers();
 
@@ -53,7 +54,7 @@ const ChatContextProvider = function (props) {
 
   const getChatHandler = async (chatId) => {
     if (activeChat && chatId === activeChat._id) return;
-    getChat({
+    getChatRequest({
       url: `http://localhost:5000/chat/${chatId}`,
       method: "GET",
       headers: myHeaders
@@ -75,7 +76,7 @@ const ChatContextProvider = function (props) {
 
   const createGetChatHandler = async (userWithId) => {
     console.log(userWithId);
-    createGetChat({
+    createGetChatRequest({
       url: "http://localhost:5000/chat/new",
       method: "POST",
       body: JSON.stringify({
@@ -85,9 +86,25 @@ const ChatContextProvider = function (props) {
     }, getNewChat.bind(null));
   };
 
+  const sendMessage = async (chatId, text, response) => {
+    setActiveChat(prevState => ({ ...prevState, messages: [...prevState.messages, response.message] }));
+  };
+
+  const sendMessageHandler = async (chatId, text) => {
+    sendMessageRequest({
+      url: "http://localhost:5000/chat/new-message",
+      method: "POST",
+      body: JSON.stringify({
+        chatId,
+        text
+      }),
+      headers: myHeaders
+    }, sendMessage.bind(null, chatId, text));
+  };
+
   return (
     <ChatContext.Provider value={{
-      friendsChats, randomChats, activeChat, getChatHandler, createGetChatHandler
+      friendsChats, randomChats, activeChat, getChatHandler, createGetChatHandler, sendMessageHandler
     }}
     >
       {children}

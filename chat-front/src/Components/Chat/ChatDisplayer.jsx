@@ -1,21 +1,25 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
 /* eslint-disable react/prop-types */
-import React, { useRef, useEffect, useContext } from "react";
+import React, {
+  useRef, useEffect, useContext, useState
+} from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import Spinner from "react-bootstrap/Spinner";
 import ChatContext from "../../Contexts/ChatContext";
 import AuthContext from "../../Contexts/AuthContext";
 
-const ChatDisplayer = function ({ chatName }) {
+const ChatDisplayer = function () {
   const elementRef = useRef(null);
+  const [chatText, setChatText] = useState("");
+
   useEffect(() => {
     if (elementRef.current !== null) {
       elementRef.current.scrollIntoView({ behavior: "smooth" });
     }
   });
   const {
-    activeChat
+    activeChat, sendMessageHandler
   } = useContext(ChatContext);
   const {
     userInfo
@@ -26,6 +30,12 @@ const ChatDisplayer = function ({ chatName }) {
       chatWith = activeChat.users.filter(user => user._id !== userInfo.id)[0];
       return `Chat with ${chatWith.userName}`;
     }
+  };
+
+  const submitMessage = (e) => {
+    e.preventDefault();
+    sendMessageHandler(activeChat._id, chatText);
+    setChatText("");
   };
 
   let messages = [];
@@ -61,8 +71,8 @@ const ChatDisplayer = function ({ chatName }) {
       <div className="messages-container">
         {messages}
       </div>
-      <form className="form-send-message">
-        <input type="text" placeholder="Write message" />
+      <form onSubmit={(e) => submitMessage(e)} className="form-send-message">
+        <input onChange={(e) => setChatText(e.target.value)} value={chatText} type="text" placeholder="Write message" />
         <button type="submit"><FontAwesomeIcon icon={faPaperPlane} /></button>
       </form>
     </div>

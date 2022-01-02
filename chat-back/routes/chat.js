@@ -21,13 +21,13 @@ router.post("/new/", authUser, async (req, res, next) => {
 
 router.post("/new-message", authUser, async (req, res, next) => {
   const { text, chatId } = req.body;
-  const { chat, error } = await sendMessage(req.userId, text, chatId);
+  const { message, error } = await sendMessage(req.userId, text, chatId);
    if (error) {
     next(error);
   } else {
     res.status(201).json({
       status: "success",
-      chat: chat
+      message: message
     });
   }
 })
