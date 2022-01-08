@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 // eslint-disable-next-line camelcase
 import { useNavigate } from "react-router-dom";
+import io from "socket.io-client";
 import ChatContext from "./ChatContext";
 import useFetch from "../hooks/useFetch";
 import useHttp from "../hooks/useHttp";
@@ -14,6 +15,7 @@ const ChatContextProvider = function (props) {
   const [randomChats, setRandomChats] = useState(null);
   const [activeChat, setActiveChat] = useState(null);
   const [firstTimeChats, setFirstTimeChats] = useState(true);
+  const [socket, setSocket] = useState();
   const { children } = props;
 
   const { sendRequest: getChatRequest } = useHttp();
@@ -26,6 +28,12 @@ const ChatContextProvider = function (props) {
   myHeaders.append("Authorization", `Bearer ${token}`);
 
   useEffect(() => {
+    const newSocket = io("http://localhost:5001");
+    setSocket(newSocket);
+  }, []);
+
+  useEffect(() => {
+    const newSocket = io("http://localhost:5001");
     requestChats("http://localhost:5000/chat", {
       headers: myHeaders
     });
@@ -35,6 +43,12 @@ const ChatContextProvider = function (props) {
     if (chatsByType !== null) {
       setFriendsChats(chatsByType.chats.friendsChats);
       setRandomChats(chatsByType.chats.randomChats);
+      chatsByType.chats.friendsChats.forEach(chat => {
+        joinChatRoomSocket(chat._id);
+      });
+      chatsByType.chats.randomChats.forEach(chat => {
+        joinChatRoomSocket(chat._id);
+      });
       if (friendsChats) {
         if (firstTimeChats) {
           setActiveChat(friendsChats[0]);
@@ -45,6 +59,10 @@ const ChatContextProvider = function (props) {
       }
     }
   }, [chatsByType, friendsChats]);
+
+  const joinChatRoomSocket = (roomId) => {
+    socket.emit("join-room", roomId);
+  };
 
   const setActualChat = (chatId, response) => {
     if (response.status === "success") {
@@ -86,7 +104,18 @@ const ChatContextProvider = function (props) {
     }, getNewChat.bind(null));
   };
 
+  useEffect(() => {
+    if (!socket) return;
+    socket.on("recive-message", (message, room) => {
+      if (room === activeChat._id) {
+        setActiveChat(prevState => ({ ...prevState, messages: [...prevState.messages, message] }));
+      }
+    });
+    return () => socket.off("recive-message");
+  }, [socket]);
+
   const sendMessage = async (chatId, text, response) => {
+    socket.emit("send-message", response.message, activeChat._id);
     setActiveChat(prevState => ({ ...prevState, messages: [...prevState.messages, response.message] }));
   };
 

@@ -1,4 +1,5 @@
 const chalk = require("chalk");
+const debug = require("debug");
 const { validationResult } = require("express-validator");
 
 const generateError = (message, status) => {
@@ -9,7 +10,7 @@ const generateError = (message, status) => {
 const serverError = (err, port) => {
   debug(chalk.red.bold("server error"));
   if (err.code === "EADDRINUSE") {
-    debug(chalk.red.bold(`port in use ${puerto}.`));
+    debug(chalk.red.bold(`port in use ${port}.`));
   }
 };
 const notFoundError = (req, res, next) => {
