@@ -22,7 +22,11 @@ const ChatInfo = function ({ users, chatId, lastMessage }) {
   if (lastMessage) {
     lastMessageUserName = users.find(user => user._id === lastMessage.user);
     lastMessageUserName = lastMessageUserName._id === userInfo.id ? "Me" : lastMessageUserName.userName;
-    seenMessage = lastMessage.seen;
+    if (lastMessage.user === userInfo.id) {
+      seenMessage = true;
+    } else {
+      seenMessage = lastMessage.seen;
+    }
   }
   const lastMessageDate = lastMessage ? new Date(lastMessage.createdAt).toLocaleDateString() : "";
 

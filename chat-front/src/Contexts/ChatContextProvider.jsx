@@ -28,7 +28,7 @@ const ChatContextProvider = function (props) {
   myHeaders.append("Authorization", `Bearer ${token}`);
 
   useEffect(() => {
-    const newSocket = io("http://localhost:5001");
+    const newSocket = io(`${process.env.REACT_APP_SOCKET_URL}`);
     setSocket(newSocket);
   }, []);
 
@@ -39,6 +39,7 @@ const ChatContextProvider = function (props) {
   }, [requestChats]);
 
   useEffect(() => {
+    console.log("aspkodmaskpomdasokpm");
     if (chatsByType !== null) {
       setFriendsChats(chatsByType.chats.friendsChats);
       setRandomChats(chatsByType.chats.randomChats);
@@ -48,16 +49,20 @@ const ChatContextProvider = function (props) {
       chatsByType.chats.randomChats.forEach(chat => {
         joinChatRoomSocket(chat._id);
       });
-      if (friendsChats) {
-        if (firstTimeChats) {
-          setActiveChat(friendsChats[0]);
-          setFirstTimeChats(false);
-        }
-      } else {
-        setActiveChat(null);
-      }
     }
-  }, [chatsByType, friendsChats, activeChat]);
+  }, [chatsByType]);
+
+  useEffect(() => {
+    if (friendsChats) {
+      if (firstTimeChats) {
+        console.log("apskdmkasmdkjas");
+        setActiveChat(friendsChats[0]);
+        setFirstTimeChats(false);
+      }
+    } else {
+      setActiveChat(null);
+    }
+  }, [friendsChats]);
 
   const joinChatRoomSocket = (roomId) => {
     socket.emit("join-room", roomId);
@@ -110,9 +115,30 @@ const ChatContextProvider = function (props) {
           setActiveChat(prevState => ({ ...prevState, messages: [...prevState.messages, message] }));
         }
       }
+      let isFriendChat = true;
+      let messagedChatIndex = friendsChats.findIndex(chat => chat._id === room);
+      if (messagedChatIndex === -1) {
+        messagedChatIndex = randomChats.findIndex(chat => chat._id === room);
+        isFriendChat = false;
+      }
+      if (isFriendChat) {
+        setFriendsChats(prevState => ([{
+          ...prevState[messagedChatIndex],
+          messages:
+            [...prevState[messagedChatIndex].messages, message]
+        },
+        ...prevState.filter((chat, i) => i !== messagedChatIndex)]));
+      } else {
+        setRandomChats(prevState => ([{
+          ...prevState[messagedChatIndex],
+          messages:
+            [...prevState[messagedChatIndex].messages, message]
+        },
+        ...prevState.filter((chat, i) => i !== messagedChatIndex)]));
+      }
     });
     return () => socket.off("recive-message");
-  }, [socket, activeChat]);
+  }, [socket, friendsChats, randomChats]);
 
   const sendMessage = async (chatId, text, response) => {
     socket.emit("send-message", response.message, activeChat._id);

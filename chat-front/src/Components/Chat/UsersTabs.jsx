@@ -56,7 +56,7 @@ const UsersTabs = function () {
             )}
           </Tab>
           <Tab eventKey="randomChats" title="Random">
-            {randomChats != null ? randomChats.length !== 0 ? randomChats.map(chat => <ChatInfo key={chat._id} lastMessages={chat.messages[chat.messages.length - 1]} users={chat.users} chatId={chat._id} />) : <p>no data</p> : (
+            {randomChats != null ? randomChats.length !== 0 ? randomChats.map(chat => <ChatInfo key={chat._id} lastMessage={chat.messages[chat.messages.length - 1]} users={chat.users} chatId={chat._id} />) : <p>no data</p> : (
               <Spinner animation="border" role="status">
                 <span className="visually-hidden">Loading...</span>
               </Spinner>
