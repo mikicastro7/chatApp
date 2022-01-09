@@ -58,7 +58,7 @@ const ChatContextProvider = function (props) {
         setActiveChat(null);
       }
     }
-  }, [chatsByType, friendsChats]);
+  }, [chatsByType, friendsChats, activeChat]);
 
   const joinChatRoomSocket = (roomId) => {
     socket.emit("join-room", roomId);
@@ -93,7 +93,6 @@ const ChatContextProvider = function (props) {
   };
 
   const createGetChatHandler = async (userWithId) => {
-    console.log(userWithId);
     createGetChatRequest({
       url: "http://localhost:5000/chat/new",
       method: "POST",
@@ -107,12 +106,14 @@ const ChatContextProvider = function (props) {
   useEffect(() => {
     if (!socket) return;
     socket.on("recive-message", (message, room) => {
-      if (room === activeChat._id) {
-        setActiveChat(prevState => ({ ...prevState, messages: [...prevState.messages, message] }));
+      if (activeChat != null) {
+        if (room === activeChat._id) {
+          setActiveChat(prevState => ({ ...prevState, messages: [...prevState.messages, message] }));
+        }
       }
     });
     return () => socket.off("recive-message");
-  }, [socket]);
+  }, [socket, activeChat]);
 
   const sendMessage = async (chatId, text, response) => {
     socket.emit("send-message", response.message, activeChat._id);
