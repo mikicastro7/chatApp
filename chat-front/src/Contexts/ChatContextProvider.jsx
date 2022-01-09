@@ -33,8 +33,7 @@ const ChatContextProvider = function (props) {
   }, []);
 
   useEffect(() => {
-    const newSocket = io("http://localhost:5001");
-    requestChats("http://localhost:5000/chat", {
+    requestChats(`${process.env.REACT_APP_SERVER_URL}/chat`, {
       headers: myHeaders
     });
   }, [requestChats]);
@@ -73,7 +72,7 @@ const ChatContextProvider = function (props) {
   const getChatHandler = async (chatId) => {
     if (activeChat && chatId === activeChat._id) return;
     getChatRequest({
-      url: `http://localhost:5000/chat/${chatId}`,
+      url: `${process.env.REACT_APP_SERVER_URL}/chat/${chatId}`,
       method: "GET",
       headers: myHeaders
     }, setActualChat.bind(null, chatId));
@@ -84,7 +83,7 @@ const ChatContextProvider = function (props) {
       if (response.chat.new === false) {
         setActiveChat(response.chat.chat);
       } else {
-        requestChats("http://localhost:5000/chat", {
+        requestChats(`${process.env.REACT_APP_SERVER_URL}/chat`, {
           headers: myHeaders
         });
         setActiveChat(response.chat.chat);
@@ -94,7 +93,7 @@ const ChatContextProvider = function (props) {
 
   const createGetChatHandler = async (userWithId) => {
     createGetChatRequest({
-      url: "http://localhost:5000/chat/new",
+      url: `${process.env.REACT_APP_SERVER_URL}/chat/new`,
       method: "POST",
       body: JSON.stringify({
         chatWith: userWithId
@@ -122,7 +121,7 @@ const ChatContextProvider = function (props) {
 
   const sendMessageHandler = async (chatId, text) => {
     sendMessageRequest({
-      url: "http://localhost:5000/chat/new-message",
+      url: `${process.env.REACT_APP_SERVER_URL}/chat/new-message`,
       method: "POST",
       body: JSON.stringify({
         chatId,

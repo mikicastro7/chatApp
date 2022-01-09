@@ -17,7 +17,7 @@ const AuthContextProvider = function (props) {
 
   const loginUser = (e, formData) => {
     e.preventDefault();
-    requestData("http://localhost:5000/auth/login", {
+    requestData(`${process.env.REACT_APP_SERVER_URL}/auth/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -28,7 +28,7 @@ const AuthContextProvider = function (props) {
 
   const registerUser = (e, formData) => {
     e.preventDefault();
-    requestData("http://localhost:5000/auth/register", {
+    requestData(`${process.env.REACT_APP_SERVER_URL}/auth/register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"

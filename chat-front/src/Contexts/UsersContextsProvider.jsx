@@ -25,7 +25,7 @@ const UsersContextProvider = function (props) {
   myHeaders.append("Authorization", `Bearer ${token}`);
 
   useEffect(() => {
-    requestUsers("http://localhost:5000/users", {
+    requestUsers(`${process.env.REACT_APP_SERVER_URL}/users`, {
       headers: myHeaders
     });
   }, [requestUsers]);
@@ -47,7 +47,7 @@ const UsersContextProvider = function (props) {
 
   const sendRequestHandler = async (userIdSend) => {
     friendRequest({
-      url: "http://localhost:5000/users/send-request",
+      url: `${process.env.REACT_APP_SERVER_URL}/users/send-request`,
       method: "POST",
       body: JSON.stringify({
         friendToSendRquest: userIdSend
@@ -64,7 +64,7 @@ const UsersContextProvider = function (props) {
 
   const acceptRequestHandler = async (userIdAccept) => {
     friendRequest({
-      url: "http://localhost:5000/users/accept-request",
+      url: `${process.env.REACT_APP_SERVER_URL}/users/accept-request`,
       method: "POST",
       body: JSON.stringify({
         friendToAccept: userIdAccept
@@ -81,7 +81,7 @@ const UsersContextProvider = function (props) {
 
   const declineRequestHandler = async (userIdDecline) => {
     friendRequest({
-      url: "http://localhost:5000/users/decline-request",
+      url: `${process.env.REACT_APP_SERVER_URL}/users/decline-request`,
       method: "POST",
       body: JSON.stringify({
         friendToDecline: userIdDecline
