@@ -83,6 +83,12 @@ const getChats = async (userId) => {
     }
   });
 
+  if (friendsChats.length > 0 && friendsChats.messages && ObjectId(friendsChats.messages[friendsChats.messages.length - 1].user) != userId ) {
+    friendsChats.messages.forEach(message => {
+      message.seen = true;
+    });
+  }
+
   response.chats = {
     randomChats: randomChats,
     friendsChats: friendsChats
@@ -102,6 +108,12 @@ const getChat = async (userId, chatId) => {
   if (chat) {
     if (chat.users.find(user => user._id == user._id)) {
       response.chat = chat;
+      if (ObjectId(chat.messages[chat.messages.length - 1].user) != userId) {
+        chat.messages.forEach(message => {
+          message.seen = true;
+        });
+        chat.save();
+      }
     } else {
       response.error = generateError("not permited chat", 409);
     }

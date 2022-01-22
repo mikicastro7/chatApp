@@ -138,7 +138,7 @@ const ChatContextProvider = function (props) {
       }
     });
     return () => socket.off("recive-message");
-  }, [socket, friendsChats, randomChats]);
+  }, [socket, friendsChats, randomChats, activeChat]);
 
   const sendMessage = async (chatId, text, response) => {
     socket.emit("send-message", response.message, activeChat._id);
