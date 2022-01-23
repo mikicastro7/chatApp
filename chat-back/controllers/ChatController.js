@@ -6,13 +6,13 @@ var ObjectId = require('mongodb').ObjectID;
 
 const getCreateChat = async (userOneId, userTwoId) => {
   const response = {
-    chat : "success",
+    chat: "success",
     error: null
   };
   const userOne = await User.findOne(ObjectId(userOneId));
   const userTwo = await User.findOne(ObjectId(userTwoId));
 
-  const existChat = await Chat.findOne({"users": {"$size": 2, "$all": [userOne, userTwo]}}).populate({ path: "users", select: "userName"})
+  const existChat = await Chat.findOne({ "users": { "$size": 2, "$all": [userOne, userTwo] } }).populate({ path: "users", select: "userName" })
 
   let newChatBd = null;
 
@@ -35,7 +35,7 @@ const getCreateChat = async (userOneId, userTwoId) => {
 
 const sendMessage = async (userId, text, chatId) => {
   const response = {
-    message : null,
+    message: null,
     error: null
   };
   const chat = await Chat.findOne(ObjectId(chatId));
@@ -64,11 +64,11 @@ const sendMessage = async (userId, text, chatId) => {
 
 const getChats = async (userId) => {
   const response = {
-    chats : null,
+    chats: null,
     error: null
   };
   const user = await User.findOne(ObjectId(userId));
-  const chats = await Chat.find({users: user}).sort('-messages.createdAt').populate({ path: "users", select: "userName"});
+  const chats = await Chat.find({ users: user }).sort('-messages.createdAt').populate({ path: "users", select: "userName" });
 
   // TODO improve eficiency
   const friendsChats = [];
@@ -83,7 +83,7 @@ const getChats = async (userId) => {
     }
   });
 
-  if (friendsChats.length > 0 && friendsChats.messages && ObjectId(friendsChats.messages[friendsChats.messages.length - 1].user) != userId ) {
+  if (friendsChats.length > 0 && friendsChats.messages && ObjectId(friendsChats.messages[friendsChats.messages.length - 1].user) != userId) {
     friendsChats.messages.forEach(message => {
       message.seen = true;
     });
@@ -103,16 +103,18 @@ const getChat = async (userId, chatId) => {
     error: null
   }
   const user = await User.findOne(ObjectId(userId));
-  const chat = await Chat.findOne(ObjectId(chatId)).populate({ path: "users", select: "userName"});
+  const chat = await Chat.findOne(ObjectId(chatId)).populate({ path: "users", select: "userName" });
 
   if (chat) {
     if (chat.users.find(user => user._id == user._id)) {
       response.chat = chat;
-      if (ObjectId(chat.messages[chat.messages.length - 1].user) != userId) {
-        chat.messages.forEach(message => {
-          message.seen = true;
-        });
-        chat.save();
+      if (chat.messages.length > 0) {
+        if (ObjectId(chat.messages[chat.messages.length - 1].user) != userId) {
+          chat.messages.forEach(message => {
+            message.seen = true;
+          });
+          chat.save();
+        }
       }
     } else {
       response.error = generateError("not permited chat", 409);

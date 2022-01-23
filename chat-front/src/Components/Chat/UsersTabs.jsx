@@ -49,14 +49,14 @@ const UsersTabs = function () {
       <Tab eventKey="chats" title="Chats">
         <Tabs defaultActiveKey="friendsChats" id="uncontrolled-tab-example" className="mb-3">
           <Tab eventKey="friendsChats" title="Friends">
-            {friendsChats != null ? friendsChats.length !== 0 ? friendsChats.map(chat => <ChatInfo key={chat._id} lastMessage={chat.messages[chat.messages.length - 1]} users={chat.users} chatId={chat._id} />) : <p>no data</p> : (
+            {friendsChats != null ? friendsChats.length !== 0 ? friendsChats.map(chat => <ChatInfo chatType={1} key={chat._id} lastMessage={chat.messages[chat.messages.length - 1]} users={chat.users} chatId={chat._id} />) : <p>no data</p> : (
               <Spinner animation="border" role="status">
                 <span className="visually-hidden">Loading...</span>
               </Spinner>
             )}
           </Tab>
           <Tab eventKey="randomChats" title="Random">
-            {randomChats != null ? randomChats.length !== 0 ? randomChats.map(chat => <ChatInfo key={chat._id} lastMessage={chat.messages[chat.messages.length - 1]} users={chat.users} chatId={chat._id} />) : <p>no data</p> : (
+            {randomChats != null ? randomChats.length !== 0 ? randomChats.map(chat => <ChatInfo chatType={2} key={chat._id} lastMessage={chat.messages[chat.messages.length - 1]} users={chat.users} chatId={chat._id} />) : <p>no data</p> : (
               <Spinner animation="border" role="status">
                 <span className="visually-hidden">Loading...</span>
               </Spinner>

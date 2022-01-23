@@ -1,12 +1,13 @@
 /* eslint-disable react/jsx-no-constructed-context-values */
 /* eslint-disable react/prop-types */
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 // eslint-disable-next-line camelcase
 import { useNavigate } from "react-router-dom";
 import io from "socket.io-client";
 import ChatContext from "./ChatContext";
 import useFetch from "../hooks/useFetch";
 import useHttp from "../hooks/useHttp";
+import AuthContext from "./AuthContext";
 
 const ChatContextProvider = function (props) {
   const { data: chatsByType, requestData: requestChats, setData: setChatsByType } = useFetch();
@@ -21,6 +22,10 @@ const ChatContextProvider = function (props) {
   const { sendRequest: getChatRequest } = useHttp();
   const { sendRequest: createGetChatRequest } = useHttp();
   const { sendRequest: sendMessageRequest } = useHttp();
+
+  const {
+    userInfo
+  } = useContext(AuthContext);
 
   const myHeaders = new Headers();
 
@@ -39,7 +44,6 @@ const ChatContextProvider = function (props) {
   }, [requestChats]);
 
   useEffect(() => {
-    console.log("aspkodmaskpomdasokpm");
     if (chatsByType !== null) {
       setFriendsChats(chatsByType.chats.friendsChats);
       setRandomChats(chatsByType.chats.randomChats);
@@ -53,10 +57,9 @@ const ChatContextProvider = function (props) {
   }, [chatsByType]);
 
   useEffect(() => {
-    if (friendsChats) {
+    if (friendsChats && friendsChats.length > 0) {
       if (firstTimeChats) {
-        console.log("apskdmkasmdkjas");
-        setActiveChat(friendsChats[0]);
+        setActiveChat({ ...friendsChats[0], chatType: 1 });
         setFirstTimeChats(false);
       }
     } else {
@@ -68,19 +71,19 @@ const ChatContextProvider = function (props) {
     socket.emit("join-room", roomId);
   };
 
-  const setActualChat = (chatId, response) => {
+  const setActualChat = (chatId, chatType, response) => {
     if (response.status === "success") {
-      setActiveChat(response.chat);
+      setActiveChat({ ...response.chat, chatType });
     }
   };
 
-  const getChatHandler = async (chatId) => {
+  const getChatHandler = async (chatId, chatType) => {
     if (activeChat && chatId === activeChat._id) return;
     getChatRequest({
       url: `${process.env.REACT_APP_SERVER_URL}/chat/${chatId}`,
       method: "GET",
       headers: myHeaders
-    }, setActualChat.bind(null, chatId));
+    }, setActualChat.bind(null, chatId, chatType));
   };
 
   const getNewChat = (response) => {
@@ -143,6 +146,15 @@ const ChatContextProvider = function (props) {
   const sendMessage = async (chatId, text, response) => {
     socket.emit("send-message", response.message, activeChat._id);
     setActiveChat(prevState => ({ ...prevState, messages: [...prevState.messages, response.message] }));
+    if (activeChat.chatType === 1) {
+      setFriendsChats(prevState => prevState.map(chat => (
+        chat._id === chatId ? { ...chat, messages: [...chat.messages, response.message] } : chat
+      )));
+    } else {
+      setRandomChats(prevState => prevState.map(chat => (
+        chat._id === chatId ? { ...chat, messages: [...chat.messages, response.message] } : chat
+      )));
+    }
   };
 
   const sendMessageHandler = async (chatId, text) => {

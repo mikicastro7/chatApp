@@ -3,7 +3,9 @@ import React, { useContext } from "react";
 import AuthContext from "../../Contexts/AuthContext";
 import ChatContext from "../../Contexts/ChatContext";
 
-const ChatInfo = function ({ users, chatId, lastMessage }) {
+const ChatInfo = function ({
+  users, chatId, lastMessage, chatType
+}) {
   const {
     userInfo
   } = useContext(AuthContext);
@@ -36,7 +38,7 @@ const ChatInfo = function ({ users, chatId, lastMessage }) {
   }
 
   return (
-    <div role="button" tabIndex={0} onClick={() => getChatHandler(chatId)} className={`chat-preview-displayer ${seenMessage ? "" : "blue-color"} ${isChatActive ? "active-chat" : ""}`}>
+    <div role="button" tabIndex={0} onClick={() => getChatHandler(chatId, chatType)} className={`chat-preview-displayer ${seenMessage ? "" : "blue-color"} ${isChatActive ? "active-chat" : ""}`}>
       <p>{userToChatWith()}</p>
       <p className="last-message">{lastMessage ? `${lastMessageUserName}: ${lastMessage.text}` : "Send your first message"}</p>
       <p>{lastMessageDate}</p>
