@@ -41,7 +41,7 @@ const ChatDisplayer = function () {
   let messages = [];
 
   const formatMessages = () => {
-    if (activeChat === undefined || activeChat === null) {
+    if (activeChat === undefined) {
       messages = <p className="no-chat">Chat with somone or select a random chat what are you waiting for</p>;
     } else if (activeChat && activeChat.messages && activeChat.messages.length > 0) {
       activeChat.messages.forEach((message, i) => {

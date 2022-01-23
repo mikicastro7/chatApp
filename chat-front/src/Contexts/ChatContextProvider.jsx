@@ -62,6 +62,8 @@ const ChatContextProvider = function (props) {
         setActiveChat({ ...friendsChats[0], chatType: 1 });
         setFirstTimeChats(false);
       }
+    } else if (randomChats) {
+      setActiveChat(undefined);
     } else {
       setActiveChat(null);
     }
